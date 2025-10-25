@@ -38,11 +38,11 @@ Numeric columns: {numeric_cols}
 Categorical columns: {categorical_cols}
 Respond as a Python list of dicts: [{"type": "scatter", "x": "...", "y": "..."}, ...]
 """
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    import ast
+    response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}]
+)
+    port ast
     suggested_plots = ast.literal_eval(response.choices[0].message.content)
     return suggested_plots
 
