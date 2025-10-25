@@ -13,6 +13,7 @@ import pytesseract
 import sys
 print(sys.version)
 
+extracted_text = "OCR skipped in deployment"
 
 import pandas as pd
 
