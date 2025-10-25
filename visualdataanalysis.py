@@ -16,8 +16,7 @@ def load_and_preprocess(file_path):
     categorical_cols = df.select_dtypes(exclude='number').columns.tolist()
     return df, numeric_cols, categorical_cols
 
-from openai import OpenAI
-client = OpenAI(api_key="YOUR_API_KEY")
+
 
 def suggest_plots(df, numeric_cols, categorical_cols):
     prompt = f"""
@@ -70,26 +69,69 @@ Dataset: {description}
     )
     return response.choices[0].message.content
 
-pip install pandas matplotlib seaborn plotly streamlit openai fpdf
+#pip install pandas matplotlib seaborn plotly streamlit openai fpdf
 
 import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import openai
+
+# Set your API key in Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title("Generative AI for Visual Data Analysis")
 
-file = st.file_uploader("Upload CSV", type="csv")
-if file:
-    df, numeric_cols, categorical_cols = load_and_preprocess(file)
-    st.write("Data Preview:", df.head())
+# ------------------ File Upload ------------------
+uploaded_file = st.file_uploader(
+    "Upload CSV or Excel file", type=["csv", "xlsx"]
+)
 
-    st.subheader("AI-Suggested Visualizations")
-    suggested_plots = suggest_plots(df, numeric_cols, categorical_cols)
-    st.write(suggested_plots)
+if uploaded_file:
+    if uploaded_file.name.endswith(".csv"):
+        df = pd.read_csv(uploaded_file)
+    else:
+        df = pd.read_excel(uploaded_file)
 
-    st.subheader("Generated Plots")
-    plot_files = generate_plots(df, suggested_plots)
-    for p in plot_files:
-        st.image(p)
+    st.subheader("Data Preview")
+    st.dataframe(df.head())
 
-    st.subheader("AI Insights & Recommendations")
-    insights = generate_insights_and_recommendations(df)
-    st.write(insights)
+    numeric_cols = df.select_dtypes(include="number").columns.tolist()
+    st.subheader("Numeric Columns Detected")
+    st.write(numeric_cols)
+
+    # ------------------ Basic Plots ------------------
+    st.subheader("Sample Plots")
+    if numeric_cols:
+        col1, col2 = st.columns(2)
+        with col1:
+            fig, ax = plt.subplots()
+            sns.histplot(df[numeric_cols[0]], kde=True, ax=ax)
+            ax.set_title(f"Histogram of {numeric_cols[0]}")
+            st.pyplot(fig)
+
+        with col2:
+            fig2 = px.box(df, y=numeric_cols[0], title=f"Boxplot of {numeric_cols[0]}")
+            st.plotly_chart(fig2)
+
+    # ------------------ AI Analysis ------------------
+    st.subheader("AI-Generated Insights")
+    prompt = f"""
+You are a data analyst. Provide:
+1. A short summary of the dataset.
+2. Key patterns, correlations, or anomalies.
+3. Suggestions for further analysis.
+
+Dataset Preview:
+{df.head().to_string()}
+"""
+
+    if st.button("Generate Insights"):
+        with st.spinner("Generating AI insights..."):
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+            )
+
+        st.write(response.choices[0].message["content"])
