@@ -1,11 +1,9 @@
-pandas
-numpy
-matplotlib
-seaborn
-plotly
 streamlit
 openai>=1.0.0
-fpdf
-openpyxl
 python-dotenv
+pillow
+pytesseract
+langchain
+langchain-openai
+
 
