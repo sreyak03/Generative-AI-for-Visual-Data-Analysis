@@ -9,11 +9,11 @@ Original file is located at
 import streamlit as st
 
 from PIL import Image
-import pytesseract
+
 import sys
 print(sys.version)
 
-extracted_text = "OCR skipped in deployment"
+
 
 import pandas as pd
 
