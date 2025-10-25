@@ -38,11 +38,11 @@ Numeric columns: {numeric_cols}
 Categorical columns: {categorical_cols}
 Respond as a Python list of dicts: [{"type": "scatter", "x": "...", "y": "..."}, ...]
 """
-    response = openai.ChatCompletion.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Hello"}]
-)
-    port ast
+   response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    import ast
     suggested_plots = ast.literal_eval(response.choices[0].message.content)
     return suggested_plots
 
@@ -75,7 +75,7 @@ Analyze the following dataset and provide:
 Dataset: {description}
 """
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
     return response.choices[0].message.content
