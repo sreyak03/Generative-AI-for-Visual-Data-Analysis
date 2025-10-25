@@ -117,31 +117,46 @@ if uploaded_file:
 
     # ------------------ AI Analysis ------------------
     st.subheader("AI-Generated Insights")
-    prompt = f"""
-You are a data analyst. Provide:
-1. A short summary of the dataset.
-2. Key patterns, correlations, or anomalies.
-3. Suggestions for further analysis.
+
+# Use a preview of the dataset to reduce token usage
+dataset_preview = df.head().to_string()
+
+prompt = f"""
+You are a data analyst. Analyze this dataset preview (first 5 rows) and provide:
+
+1. A short summary of the dataset
+2. Key patterns, correlations, or anomalies
+3. Suggestions for further analysis
 
 Dataset Preview:
-{df.head().to_string()}
+{dataset_preview}
 """
 
-    if st.button("Generate Insights"):
-        with st.spinner("Generating AI insights..."):
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": prompt}],
+if st.button("Generate Insights"):
+    with st.spinner("Generating AI insights..."):
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": prompt}],
             )
-                st.write(response.choices[0].message["content"])
+            st.write(response.choices[0].message["content"])
 
-            except openai.error.RateLimitError:
-                st.error(
-                    "Rate limit exceeded. Please wait a few minutes and try again, "
-                    "or check your OpenAI subscription."
+        except openai.error.RateLimitError:
+            st.warning(
+                "Rate limit exceeded. Showing sample insights instead."
             )
-            except openai.error.AuthenticationError:
-                st.error("Invalid API key. Please check your OpenAI key in Streamlit secrets.")
-            except openai.error.OpenAIError as e:
-                st.error(f"OpenAI API error: {e}")
+            # Fallback sample insights
+            st.write(
+                """
+**Sample AI Insights:**  
+
+- The dataset shows no numeric columns.  
+- No obvious patterns or correlations detected.  
+- Consider adding numeric data for better analysis.  
+- For text data, you could perform NLP summarization or keyword extraction.
+"""
+            )
+        except openai.error.AuthenticationError:
+            st.error("Invalid API key. Please check your OpenAI key in Streamlit secrets.")
+        except openai.error.OpenAIError as e:
+            st.error(f"OpenAI API error: {e}")
