@@ -1,9 +1,10 @@
-streamlit
-openai>=1.0.0
+streamlit==1.32.2
+openai==1.40.2
 python-dotenv
 pillow
 pytesseract
 langchain
 langchain-openai
+
 
 
