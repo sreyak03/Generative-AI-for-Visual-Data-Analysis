@@ -127,7 +127,7 @@ Dataset Preview:
 {df.head().to_string()}
 """
 
-   if st.button("Generate Insights"):
+ if st.button("Generate Insights"):
     with st.spinner("Generating AI insights..."):
         try:
             response = openai.ChatCompletion.create(
