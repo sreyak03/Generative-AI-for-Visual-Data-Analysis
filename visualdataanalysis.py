@@ -119,7 +119,7 @@ if uploaded_file:
     st.subheader("AI-Generated Insights")
 
 # Use a preview of the dataset to reduce token usage
-dataset_preview = df.head().to_string()
+#dataset_preview = df.head().to_string()
 
 prompt = f"""
 You are a data analyst. Analyze this dataset preview (first 5 rows) and provide:
