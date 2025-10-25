@@ -1,0 +1,13 @@
+streamlit
+openai==0.28
+pandas
+matplotlib
+seaborn
+plotly
+openpyxl
+python-dotenv
+
+
+
+
+
