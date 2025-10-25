@@ -19,8 +19,15 @@ def load_and_preprocess(file_path):
     categorical_cols = df.select_dtypes(exclude='number').columns.tolist()
     return df, numeric_cols, categorical_cols
 
-from openai import OpenAI
-client = OpenAI(api_key="YOUR_API_KEY")
+import openai
+
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": prompt}],
+)
+
 
 def suggest_plots(df, numeric_cols, categorical_cols):
     prompt = f"""
