@@ -129,7 +129,7 @@ You are a data analyst. Analyze this dataset preview (first 5 rows) and provide:
 3. Suggestions for further analysis
 
 Dataset Preview:
-{dataset_preview}
+
 """
 
 if st.button("Generate Insights"):
