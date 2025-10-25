@@ -127,11 +127,21 @@ Dataset Preview:
 {df.head().to_string()}
 """
 
-    if st.button("Generate Insights"):
-        with st.spinner("Generating AI insights..."):
+   if st.button("Generate Insights"):
+    with st.spinner("Generating AI insights..."):
+        try:
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
             )
+            st.write(response.choices[0].message["content"])
 
-        st.write(response.choices[0].message["content"])
+        except openai.error.RateLimitError:
+            st.error(
+                "Rate limit exceeded. Please wait a few minutes and try again, "
+                "or check your OpenAI subscription."
+            )
+        except openai.error.AuthenticationError:
+            st.error("Invalid API key. Please check your OpenAI key in Streamlit secrets.")
+        except openai.error.OpenAIError as e:
+            st.error(f"OpenAI API error: {e}")
