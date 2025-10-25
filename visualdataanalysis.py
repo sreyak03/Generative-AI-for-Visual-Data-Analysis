@@ -70,7 +70,7 @@ Dataset: {description}
     )
     return response.choices[0].message.content
 
-pip install pandas matplotlib seaborn plotly streamlit openai fpdf
+#pip install pandas matplotlib seaborn plotly streamlit openai fpdf
 
 import streamlit as st
 
